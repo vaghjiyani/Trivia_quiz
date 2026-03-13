@@ -14,6 +14,7 @@ class QuestionLoaded extends QuestionState {
   final int skippedQuestion;
   final int wrong;
   final int reammingTime;
+  final bool didLoadAPIValues;
 
   QuestionLoaded({
     required this.questions,
@@ -22,6 +23,7 @@ class QuestionLoaded extends QuestionState {
     this.skippedQuestion = 0,
     this.wrong = 0,
     required this.reammingTime,
+    this.didLoadAPIValues = false,
   });
 }
 

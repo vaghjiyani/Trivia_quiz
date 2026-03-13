@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trivia_quiz/cubit/question_cubit.dart';
@@ -11,7 +13,19 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  List<String>? currentAnswer;
+  Timer? timer;
+
+  void setTimer() {
+    timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+      context.read<QuestionCubit>().changeTime();
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +34,12 @@ class _QuizScreenState extends State<QuizScreen> {
 
       body: BlocListener<QuestionCubit, QuestionState>(
         listener: (context, state) {
-          //loading the shuffleing the question
           if (state is QuestionLoaded) {
-            final question = state.questions[state.currentIndex];
-            currentAnswer = [
-              ...question.incorrectAnswers,
-              question.correctAnswer,
-            ];
-            currentAnswer!.shuffle();
+            if (state.didLoadAPIValues == true) {
+              setTimer();
+            }
           }
+
           // error
           if (state is QuestionError) {
             ScaffoldMessenger.of(context).showSnackBar(

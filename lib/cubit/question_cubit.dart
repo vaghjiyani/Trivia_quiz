@@ -1,24 +1,26 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:trivia_quiz/models/question_model.dart';
-import 'package:trivia_quiz/services/api_services.dart';
+import 'package:trivia_quiz/repository/quiz_repository.dart';
 
 part 'question_state.dart';
 
 class QuestionCubit extends Cubit<QuestionState> {
-  final ApiServices authService;
-  Timer? _timer;
+  final QuizRepository repo;
 
-  QuestionCubit(this.authService) : super(QuestionInitial());
+  QuestionCubit(this.repo) : super(QuestionInitial());
 
   Future<void> fetchQuestion(int categoryId) async {
     try {
       emit(QuestionLoading());
-      final question = await authService.fetchQuestion(categoryId);
-      emit(QuestionLoaded(questions: question, reammingTime: 30));
-      startTimer();
+      final question = await repo.fetchQuestions(categoryId);
+      emit(
+        QuestionLoaded(
+          questions: question,
+          reammingTime: 30,
+          didLoadAPIValues: true,
+        ),
+      );
     } catch (e) {
       emit(QuestionError(e.toString()));
     }
@@ -80,28 +82,23 @@ class QuestionCubit extends Cubit<QuestionState> {
     }
   }
 
-  //timer method
-  void startTimer() {
-    _timer?.cancel();
-
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (state is QuestionLoaded) {
-        final currentState = state as QuestionLoaded;
-        if (currentState.reammingTime > 0) {
-          emit(
-            QuestionLoaded(
-              questions: currentState.questions,
-              currentIndex: currentState.currentIndex,
-              score: currentState.score,
-              wrong: currentState.wrong,
-              skippedQuestion: currentState.skippedQuestion,
-              reammingTime: currentState.reammingTime - 1,
-            ),
-          );
-        } else {
-          answerQuestion(''); // Auto submit after the time is completade
-        }
+  void changeTime() {
+    if (state is QuestionLoaded) {
+      final currentState = state as QuestionLoaded;
+      if (currentState.reammingTime > 0) {
+        emit(
+          QuestionLoaded(
+            questions: currentState.questions,
+            currentIndex: currentState.currentIndex,
+            score: currentState.score,
+            wrong: currentState.wrong,
+            skippedQuestion: currentState.skippedQuestion,
+            reammingTime: currentState.reammingTime - 1,
+          ),
+        );
+      } else {
+        answerQuestion(''); // Auto submit after the time is completade
       }
-    });
+    }
   }
 }
