@@ -1,20 +1,21 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 import 'package:trivia_quiz/models/category_model.dart';
 import 'package:trivia_quiz/models/question_model.dart';
+import 'package:trivia_quiz/utils/constants.dart';
 
 class ApiServices {
   final Dio dio = Dio();
 
   Future<List<CategoryModel>> fetchCategories() async {
     try {
-      final response = await dio.get('https://opentdb.com/api_category.php');
-      final List category = response
-          .data["trivia_categories"]; //key that cantain list of categories
-
-      // this is for convert list of json into object to list<Model>
-      // in simple conversion
-      return category.map((json) => CategoryModel.fromJson(json)).toList();
+      final url = "${baseUrl}api_category.php";
+      final response = await dio.get(url);
+      return (response.data['trivia_categories'] as List)
+          .map((e) => CategoryModel.fromJson(e))
+          .toList();
     } catch (e) {
       print(e);
       rethrow;
@@ -26,18 +27,11 @@ class ApiServices {
     String token,
   ) async {
     try {
-      final response = await dio.get(
-        'https://opentdb.com/api.php',
-        queryParameters: {
-          'amount': 10,
-          'category': categoryId,
-          'type': 'multiple',
-          'token': token,
-        },
-      );
+      final url =
+          "${baseUrl}api.php?amount=10&category=$categoryId&type=multiple&token=$token";
+      final response = await dio.get(url);
 
-      final List result =
-          response.data["results"]; // becouse this is convert in json
+      final List result = response.data["results"];
 
       // conversion of the object to the list
       return result.map((json) => QuestionModel.fromJson(json)).toList();
