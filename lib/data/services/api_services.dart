@@ -21,14 +21,18 @@ class ApiServices {
     }
   }
 
-  Future<List<QuestionModel>> fetchQuestion(int cateforyId) async {
+  Future<List<QuestionModel>> fetchQuestion(
+    int categoryId,
+    String token,
+  ) async {
     try {
       final response = await dio.get(
         'https://opentdb.com/api.php',
         queryParameters: {
           'amount': 10,
-          'category': cateforyId,
+          'category': categoryId,
           'type': 'multiple',
+          'token': token,
         },
       );
 
@@ -42,6 +46,21 @@ class ApiServices {
         throw Exception("Too Many Requests");
       }
       print(e);
+      rethrow;
+    }
+  }
+
+  Future<String> fetchToken() async {
+    try {
+      final response = await dio.get(
+        'https://opentdb.com/api_token.php?command=request',
+      );
+      if (response.data['response_code'] == 0) {
+        return response.data['token'];
+      } else {
+        throw Exception("token not found");
+      }
+    } catch (e) {
       rethrow;
     }
   }

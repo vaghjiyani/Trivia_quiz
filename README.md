@@ -18,7 +18,21 @@ samples, guidance on mobile development, and a full API reference.
 # Trivia_quiz
 
 
+for reset token
 
-
-
+<!-- //   Future<String> resetToken(String token) async {
+  //     try {
+  //       final response = await dio.get(
+  //         'https://opentdb.com/api_token.php?command=reset&token=$token',
+  //       );
+  //       if (response.data['response_code'] == 0) {
+  //         return response.data['token'];
+  //       } else {
+  //         throw Exception("Failed to reset token");
+  //       }
+  //     } catch (e) {
+  //       rethrow;
+  //     }
+  //   }
+  // } -->
 

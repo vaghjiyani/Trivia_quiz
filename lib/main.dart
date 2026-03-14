@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trivia_quiz/cubit/category_cubit.dart';
 import 'package:trivia_quiz/cubit/question_cubit.dart';
-import 'package:trivia_quiz/repository/quiz_repository.dart';
+import 'package:trivia_quiz/data/repository/quiz_repository.dart';
 import 'package:trivia_quiz/screens/splace_screen.dart';
-import 'package:trivia_quiz/services/api_services.dart';
+import 'package:trivia_quiz/data/services/api_services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Trivia',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),

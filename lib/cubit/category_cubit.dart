@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:trivia_quiz/models/category_model.dart';
-import 'package:trivia_quiz/repository/quiz_repository.dart';
+import 'package:trivia_quiz/data/repository/quiz_repository.dart';
 
 part 'category_state.dart';
 

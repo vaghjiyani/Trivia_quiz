@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:trivia_quiz/models/question_model.dart';
-import 'package:trivia_quiz/repository/quiz_repository.dart';
+import 'package:trivia_quiz/data/repository/quiz_repository.dart';
 
 part 'question_state.dart';
 
@@ -13,6 +13,7 @@ class QuestionCubit extends Cubit<QuestionState> {
   Future<void> fetchQuestion(int categoryId) async {
     try {
       emit(QuestionLoading());
+
       final question = await repo.fetchQuestions(categoryId);
       emit(
         QuestionLoaded(
